@@ -4,16 +4,19 @@ _base_ = [
 ]
 
 model = dict(
-    head=dict(num_classes=2,
-              topk=1,
-              #loss=dict(_delete_=True, type='CrossEntropyLoss', loss_weight=1.0, use_sigmoid=True),),
-              ),
-    train_cfg=dict(augments=[
-        dict(type='BatchMixup', alpha=0.8, num_classes=2, prob=0.5),
-        dict(type='BatchCutMix', alpha=1.0, num_classes=2, prob=0.5)
-    ])
+    head=dict(
+        _delete_=True,
+        type='MultiLabelLinearClsHead',
+        num_classes=1,
+        in_channels=1024,
+        loss=dict(type='CrossEntropyLoss', loss_weight=1.0, use_sigmoid=True)),
+    train_cfg=None
+    # train_cfg=dict(augments=[
+    #     dict(type='BatchMixup', alpha=0.8, num_classes=2, prob=0.5),
+    #     dict(type='BatchCutMix', alpha=1.0, num_classes=2, prob=0.5)
+    # ])
 )
-classes = ("bg", "Rumex")
+classes = None#("bg", "Rumex")
 dataset_type = 'CustomDataset'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -35,7 +38,7 @@ test_pipeline = [
     dict(type='Collect', keys=['img'])
 ]
 data = dict(
-    samples_per_gpu=32,
+    samples_per_gpu=64,
     workers_per_gpu=2,
     train=dict(
         classes=classes,
@@ -55,9 +58,8 @@ data = dict(
         data_prefix='/data/test',
         ann_file='/data/meta/test.txt',
         pipeline=test_pipeline))
-evaluation = dict(interval=1, metric='accuracy', metric_options=dict(
-    topk=(1,)
-))
+evaluation = dict(interval=1, metric='binary_accuracy')
+checkpoint_config = dict(interval=20)
 
 paramwise_cfg = dict(
     norm_decay_mult=0.0,

@@ -17,7 +17,7 @@ From: nvcr.io/nvidia/pytorch:20.12-py3
 
     # Install MMClassification
     conda clean --all
-    git clone https://github.com/open-mmlab/mmclassification.git /mmclassification
+    git clone https://github.com/EmilRyberg/mmclassification.git /mmclassification
     cd /mmclassification
     export FORCE_CUDA="1"
     #pip install --no-cache-dir -r requirements/build.txt
