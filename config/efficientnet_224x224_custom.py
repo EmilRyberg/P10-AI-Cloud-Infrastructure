@@ -1,6 +1,6 @@
 _base_ = [
     "/mmclassification/configs/_base_/datasets/pipelines/rand_aug.py",
-    "/mmclassification/configs/_base_/models/swin_transformer/base_224.py",
+    "/mmclassification/configs/_base_/models/efficientnet_b0.py",
     "/mmclassification/configs/_base_/default_runtime.py"
 ]
 
@@ -9,15 +9,15 @@ model = dict(
         _delete_=True,
         type='MultiLabelLinearClsHead',
         num_classes=1,
-        in_channels=1024,
+        in_channels=1280,
         loss=dict(type='CrossEntropyLoss', loss_weight=1.0, use_sigmoid=True)),
     train_cfg=None
-    # train_cfg=dict(augments=[
-    #     dict(type='BatchMixup', alpha=0.8, num_classes=2, prob=0.5),
-    #     dict(type='BatchCutMix', alpha=1.0, num_classes=2, prob=0.5)
-    # ])
+      #train_cfg=dict(augments=[
+      #    dict(type='BatchMixup', alpha=0.8, num_classes=2, prob=0.5),
+      #    dict(type='BatchCutMix', alpha=1.0, num_classes=2, prob=0.5)
+      #])
 )
-classes = None#("bg", "Rumex")
+classes = None #("bg", "Rumex")
 dataset_type = 'CustomDataset'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -62,23 +62,24 @@ data = dict(
     train=dict(
         classes=classes,
         type=dataset_type,
-        data_prefix='/data/train',
+        data_prefix='data/train',
         pipeline=train_pipeline),
     val=dict(
         classes=classes,
         type=dataset_type,
-        data_prefix='/data/val',
-        ann_file='/data/meta/val.txt',
+        data_prefix='data/val',
+        ann_file='data/meta/val.txt',
         pipeline=test_pipeline),
     test=dict(
-        # replace `data/val` with `data/test` for standard test
         classes=classes,
         type=dataset_type,
-        data_prefix='/data/test',
-        ann_file='/data/meta/test.txt',
+        data_prefix='data/test',
+        ann_file='data/meta/test.txt',
         pipeline=test_pipeline))
-evaluation = dict(interval=1, metric='binary_accuracy')
-checkpoint_config = dict(interval=20)
+#evaluation = dict(interval=1, metric='accuracy', metric_options=dict(
+#    topk=(1,)
+#))
+evaluation=dict(interval=1, metric='binary_accuracy')
 
 paramwise_cfg = dict(
     norm_decay_mult=0.0,
@@ -96,6 +97,7 @@ optimizer = dict(
     betas=(0.9, 0.999),
     paramwise_cfg=paramwise_cfg)
 optimizer_config = dict(grad_clip=dict(max_norm=5.0))
+checkpoint_config = dict(interval=20)
 
 # learning policy
 lr_config = dict(
