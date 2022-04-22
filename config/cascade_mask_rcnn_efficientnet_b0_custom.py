@@ -151,6 +151,7 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
+        #filter_empty_gt=False,
         classes=classes,
         ann_file=data_root + 'annotations/train.json',
         img_prefix=data_root + 'train/',
@@ -171,7 +172,7 @@ evaluation = dict(metric=['bbox', 'segm'])
 checkpoint_config = dict(interval=1)
 
 #optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
-optimizer = dict(type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
+optimizer = dict(type='AdamW', lr=0.001, betas=(0.9, 0.999), weight_decay=0.05,
                  paramwise_cfg=dict(custom_keys={'absolute_pos_embed': dict(decay_mult=0.),
                                                  'relative_position_bias_table': dict(decay_mult=0.),
                                                  'norm': dict(decay_mult=0.)}))

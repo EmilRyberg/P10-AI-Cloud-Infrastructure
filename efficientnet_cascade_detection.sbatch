@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name swin_base_classification
+#SBATCH --job-name cascase_mask_rcnn_efficientnet
 #SBATCH --partition batch # equivalent to PBS batch
 #SBATCH --time 24:00:00
 #SBATCH --qos=normal # possible values: short, normal, allgpus, 1gpulong
@@ -16,5 +16,5 @@ if [[ ! -d /raid/student.eryber17/dataset_splitted ]]; then
 fi
 
 srun echo start training
-srun singularity run --nv -B /user/student.aau.dk/eryber17/custom_mmdetection_configs:/custom_configs -B /raid/student.eryber17/dataset_splitted:/data -B /user/student.aau.dk/eryber17/detection_work_dirs:/work_dirs /user/student.aau.dk/eryber17/mmdetection.sif python /mmdetection/tools/train.py --work-dir /work_dirs /custom_configs/cascade_mask_rcnn_efficientnet_b0_custom.py
+srun singularity run --nv -B /user/student.aau.dk/eryber17/custom_mmdetection_configs:/custom_configs -B /raid/student.eryber17/dataset_splitted:/data -B /user/student.aau.dk/eryber17/detection_work_dirs:/work_dirs -B /user/student.aau.dk/eryber17/checkpoints:/checkpoints /user/student.aau.dk/eryber17/mmdetection.sif python /mmdetection/tools/train.py --work-dir /work_dirs /custom_configs/cascade_mask_rcnn_efficientnet_b0_custom.py
 srun echo finished training
