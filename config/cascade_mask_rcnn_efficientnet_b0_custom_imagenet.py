@@ -3,7 +3,7 @@ _base_ = [
     '/mmdetection/configs/_base_/default_runtime.py'
 ]
 
-checkpoint = '/checkpoints/efficientnet_224x224_custom/epoch_300.pth'  # noqa
+checkpoint = 'https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b0_3rdparty_8xb32_in1k_20220119-a7e2a0b1.pth'  # noqa
 
 model = dict(
     type='CascadeRCNN',
@@ -12,15 +12,15 @@ model = dict(
         type='EfficientNet',
         arch='b0',
         drop_path_rate=0.2,
-        out_indices=(2, 3, 4, 5),
+        out_indices=(1, 2, 3, 4),
         frozen_stages=0,
         norm_cfg=dict(
             type='BN', requires_grad=True, eps=1e-3, momentum=0.01),
-        norm_eval=True,
+        norm_eval=False,
         init_cfg=dict(
             type='Pretrained', prefix='backbone.', checkpoint=checkpoint),
     ),
-    neck=dict(in_channels=[24, 40, 112, 320]),
+    neck=dict(in_channels=[16, 24, 40, 112]),
     roi_head=dict(
         bbox_head=[
             dict(
@@ -141,9 +141,9 @@ data = dict(
         img_prefix=data_root + 'test/',
         pipeline=test_pipeline))
 evaluation = dict(metric=['bbox', 'segm'])
-checkpoint_config = dict(interval=5)
+checkpoint_config = dict(interval=1)
 
-optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
 #optimizer = dict(type='AdamW', lr=0.001, betas=(0.9, 0.999), weight_decay=0.05,
 #                 paramwise_cfg=dict(custom_keys={'absolute_pos_embed': dict(decay_mult=0.),
 #                                                 'relative_position_bias_table': dict(decay_mult=0.),
@@ -155,8 +155,8 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[30, 50])
-runner = dict(type='EpochBasedRunner', max_epochs=80)
+    step=[16, 22])
+runner = dict(type='EpochBasedRunner', max_epochs=36)
 #optimizer_config = None
 #model = dict(
 #    roi_head=dict(

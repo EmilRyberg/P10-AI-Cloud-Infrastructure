@@ -3,24 +3,12 @@ _base_ = [
     '/mmdetection/configs/_base_/default_runtime.py'
 ]
 
-checkpoint = '/checkpoints/efficientnet_224x224_custom/epoch_300.pth'  # noqa
-
+#custom_imports = dict(imports=['mmcls.models'], allow_failed_imports=False)
+#checkpoint = 'F:/Projects/P10-Training/work_dirs/efficientnet_224x224_custom/epoch_300.pth'  # noqa
+#checkpoint = 'https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b0_3rdparty_8xb32_in1k_20220119-a7e2a0b1.pth'
+load_from = 'https://download.openmmlab.com/mmdetection/v2.0/cascade_rcnn/cascade_rcnn_r50_fpn_1x_coco/cascade_rcnn_r50_fpn_1x_coco_20200316-3dc56deb.pth'
 model = dict(
     type='CascadeRCNN',
-    backbone=dict(
-        _delete_=True,
-        type='EfficientNet',
-        arch='b0',
-        drop_path_rate=0.2,
-        out_indices=(2, 3, 4, 5),
-        frozen_stages=0,
-        norm_cfg=dict(
-            type='BN', requires_grad=True, eps=1e-3, momentum=0.01),
-        norm_eval=True,
-        init_cfg=dict(
-            type='Pretrained', prefix='backbone.', checkpoint=checkpoint),
-    ),
-    neck=dict(in_channels=[24, 40, 112, 320]),
     roi_head=dict(
         bbox_head=[
             dict(
@@ -84,8 +72,6 @@ model = dict(
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-
-# augmentation strategy originates from DETR / Sparse RCNN
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
@@ -123,27 +109,29 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        #filter_empty_gt=False,
+        filter_empty_gt=False,
         classes=classes,
         ann_file=data_root + 'annotations/train.json',
         img_prefix=data_root + 'train/',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
+        filter_empty_gt=False,
         classes=classes,
         ann_file=data_root + 'annotations/val.json',
         img_prefix=data_root + 'val/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
+        filter_empty_gt=False,
         classes=classes,
         ann_file=data_root + 'annotations/test.json',
         img_prefix=data_root + 'test/',
         pipeline=test_pipeline))
 evaluation = dict(metric=['bbox', 'segm'])
-checkpoint_config = dict(interval=5)
+checkpoint_config = dict(interval=1)
 
-optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
 #optimizer = dict(type='AdamW', lr=0.001, betas=(0.9, 0.999), weight_decay=0.05,
 #                 paramwise_cfg=dict(custom_keys={'absolute_pos_embed': dict(decay_mult=0.),
 #                                                 'relative_position_bias_table': dict(decay_mult=0.),
@@ -155,8 +143,8 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[30, 50])
-runner = dict(type='EpochBasedRunner', max_epochs=80)
+    step=[16, 22])
+runner = dict(type='EpochBasedRunner', max_epochs=36)
 #optimizer_config = None
 #model = dict(
 #    roi_head=dict(
