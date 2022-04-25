@@ -28,7 +28,7 @@ model = dict(
         convert_weights=False,
         init_cfg=dict(type='Pretrained', prefix='backbone.', checkpoint=pretrained),
     ),
-    neck=dict(in_channels=[96, 192, 384, 768]),
+    neck=dict(in_channels=[128, 256, 512, 1024]),
     roi_head=dict(
         bbox_head=[
             dict(
@@ -180,7 +180,12 @@ optimizer = dict(type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
                                                  'relative_position_bias_table': dict(decay_mult=0.),
                                                  'norm': dict(decay_mult=0.)}))
 optimizer_config = dict(grad_clip=None)
-lr_config = dict(warmup_iters=1000, step=[30, 50])
+lr_config = dict(
+    policy='step',
+    warmup='linear',
+    warmup_iters=1000,
+    warmup_ratio=0.001,
+    step=[30, 50])
 runner = dict(type='EpochBasedRunner', max_epochs=80)
 #optimizer_config = None
 #model = dict(
