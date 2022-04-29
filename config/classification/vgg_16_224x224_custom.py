@@ -1,15 +1,15 @@
 _base_ = [
     "/mmclassification/configs/_base_/datasets/pipelines/rand_aug.py",
-    "/mmclassification/configs/_base_/models/efficientnet_b0.py",
+    "/mmclassification/configs/_base_/models/vgg16bn.py",
     "/mmclassification/configs/_base_/default_runtime.py"
 ]
 
 model = dict(
+    backbone=dict(num_classes=1),
     head=dict(
         _delete_=True,
-        type='MultiLabelLinearClsHead',
-        num_classes=1,
-        in_channels=1280,
+        type='MultiLabelClsHead',
+        in_channels=2048,
         loss=dict(type='CrossEntropyLoss', loss_weight=1.0, use_sigmoid=True)),
     train_cfg=None
       #train_cfg=dict(augments=[
@@ -17,7 +17,7 @@ model = dict(
       #    dict(type='BatchCutMix', alpha=1.0, num_classes=2, prob=0.5)
       #])
 )
-classes = None #("bg", "Rumex")
+classes = None
 dataset_type = 'CustomDataset'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -76,9 +76,6 @@ data = dict(
         data_prefix='/data/test',
         ann_file='/data/meta/test.txt',
         pipeline=test_pipeline))
-#evaluation = dict(interval=1, metric='accuracy', metric_options=dict(
-#    topk=(1,)
-#))
 evaluation=dict(interval=1, metric='binary_accuracy')
 
 paramwise_cfg = dict(
@@ -91,7 +88,7 @@ paramwise_cfg = dict(
 
 optimizer = dict(
     type='AdamW',
-    lr=0.01,
+    lr=0.001,
     weight_decay=0.05,
     eps=1e-8,
     betas=(0.9, 0.999),
