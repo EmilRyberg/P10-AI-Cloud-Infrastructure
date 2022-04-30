@@ -9,7 +9,6 @@ model = dict(
     head=dict(
         _delete_=True,
         type='MultiLabelClsHead',
-        in_channels=2048,
         loss=dict(type='CrossEntropyLoss', loss_weight=1.0, use_sigmoid=True)),
     train_cfg=None
       #train_cfg=dict(augments=[
