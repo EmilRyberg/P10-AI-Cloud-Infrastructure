@@ -69,7 +69,7 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=1000,
     warmup_ratio=0.001,
-    step=[30, 50])
+    step=[60, 70])
 runner = dict(type='EpochBasedRunner', max_epochs=80)
 
 #optimizer_config = None
