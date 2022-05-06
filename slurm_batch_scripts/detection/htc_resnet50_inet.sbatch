@@ -15,10 +15,10 @@ if [[ ! -d /raid/student.eryber17/dataset_splitted ]]; then
      cp -a -r /user/student.aau.dk/eryber17/dataset_splitted /raid/student.eryber17/dataset_splitted
 fi
 
-if [[ ! -d /user/student.aau.dk/eryber17/htc_resnet50_inet_work_dir ]]; then
-     mkdir -p /user/student.aau.dk/eryber17/htc_resnet50_inet_work_dir
+if [[ ! -d /user/student.aau.dk/eryber17/htc_resnet50_inet2_work_dir ]]; then
+     mkdir -p /user/student.aau.dk/eryber17/htc_resnet50_inet2_work_dir
 fi
 
 srun echo start training
-srun singularity run --nv -B /user/student.aau.dk/eryber17/custom_mmdetection_configs/detection:/custom_configs -B /raid/student.eryber17/dataset_splitted:/data -B /user/student.aau.dk/eryber17/htc_resnet50_inet_work_dir:/work_dir -B /user/student.aau.dk/eryber17/checkpoints:/checkpoints /user/student.aau.dk/eryber17/mmdetection.sif python /mmdetection/tools/train.py --work-dir /work_dir /custom_configs/htc_resnet50_inet.py
+srun singularity run --nv -B /user/student.aau.dk/eryber17/custom_mmdetection_configs/detection:/custom_configs -B /raid/student.eryber17/dataset_splitted:/data -B /user/student.aau.dk/eryber17/htc_resnet50_inet2_work_dir:/work_dir -B /user/student.aau.dk/eryber17/checkpoints:/checkpoints /user/student.aau.dk/eryber17/mmdetection.sif python /mmdetection/tools/train.py --work-dir /work_dir /custom_configs/htc_resnet50_inet.py
 srun echo finished training

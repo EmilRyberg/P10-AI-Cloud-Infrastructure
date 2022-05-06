@@ -55,7 +55,7 @@ data = dict(
         img_prefix=data_root + 'test/',
         pipeline=test_pipeline))
 evaluation = dict(metric=['bbox', 'segm'])
-checkpoint_config = dict(interval=5)
+checkpoint_config = dict(interval=20)
 
 optimizer = dict(type='AdamW', lr=0.001, betas=(0.9, 0.999), weight_decay=0.05,
                  paramwise_cfg=dict(custom_keys={'absolute_pos_embed': dict(decay_mult=0.),
@@ -69,8 +69,8 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=1000,
     warmup_ratio=0.001,
-    step=[60, 70])
-runner = dict(type='EpochBasedRunner', max_epochs=80)
+    step=[105, 115])
+runner = dict(type='EpochBasedRunner', max_epochs=120)
 
 #optimizer_config = None
 #model = dict(

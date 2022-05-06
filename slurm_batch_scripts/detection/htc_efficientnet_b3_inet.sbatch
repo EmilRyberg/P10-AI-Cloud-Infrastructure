@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name cmrcnn_resnet50_inet
+#SBATCH --job-name htc_en_b3
 #SBATCH --partition batch # equivalent to PBS batch
 #SBATCH --time 72:00:00
 #SBATCH --qos=allgpus # possible values: short, normal, allgpus, 1gpulong
@@ -15,10 +15,10 @@ if [[ ! -d /raid/student.eryber17/dataset_splitted ]]; then
      cp -a -r /user/student.aau.dk/eryber17/dataset_splitted /raid/student.eryber17/dataset_splitted
 fi
 
-if [[ ! -d /user/student.aau.dk/eryber17/c_mrcnn_resnet50_inet3_work_dir ]]; then
-     mkdir -p /user/student.aau.dk/eryber17/c_mrcnn_resnet50_inet3_work_dir
+if [[ ! -d /user/student.aau.dk/eryber17/htc_en_b3_inet3_work_dir ]]; then
+     mkdir -p /user/student.aau.dk/eryber17/htc_en_b3_inet3_work_dir
 fi
 
 srun echo start training
-srun singularity run --nv -B /user/student.aau.dk/eryber17/custom_mmdetection_configs/detection:/custom_configs -B /raid/student.eryber17/dataset_splitted:/data -B /user/student.aau.dk/eryber17/c_mrcnn_resnet50_inet3_work_dir:/work_dir -B /user/student.aau.dk/eryber17/checkpoints:/checkpoints /user/student.aau.dk/eryber17/mmdetection.sif python /mmdetection/tools/train.py --work-dir /work_dir /custom_configs/cascade_mask_rcnn_inet.py
+srun singularity run --nv -B /user/student.aau.dk/eryber17/custom_mmdetection_configs/detection:/custom_configs -B /raid/student.eryber17/dataset_splitted:/data -B /user/student.aau.dk/eryber17/htc_en_b3_inet3_work_dir:/work_dir -B /user/student.aau.dk/eryber17/checkpoints:/checkpoints /user/student.aau.dk/eryber17/mmdetection.sif python /mmdetection/tools/train.py --work-dir /work_dir /custom_configs/htc_efficientnet_b3_inet.py
 srun echo finished training
