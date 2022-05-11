@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+#SBATCH --job-name swinV2_b
+#SBATCH --partition batch # equivalent to PBS batch
+#SBATCH --time 48:00:00
+#SBATCH --qos=allgpus # possible values: short, normal, allgpus, 1gpulong
+#SBATCH --gres=gpu:2 # CHANGE this if you need more or less GPUs
+#SBATCH --nodelist=nv-ai-01.srv.aau.dk # CHANGE this to nodename of your choice. Currently only two possible nodes are available: nv-ai-01.srv.aau.dk, nv-ai-03.srv.aau.dk
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=asol17@student.aau.dk
+
+## Preparation
+mkdir -p /raid/student.asol17 # create a folder to hold your data. It's a good idea to use this path pattern: /raid/<subdomain>.<username>.
+
+if [[ ! -d /raid/student.asol17/swin_image_data ]]; then
+     # Wrap this copy command inside the if condition so that we copy data only if the target folder doesn't exist
+     cp -a /user/student.aau.dk/asol17/imageClassification/swin_image_data /raid/student.asol17/swin_image_data
+fi
+if [[ ! -d /raid/student.asol17/output ]]; then
+     mkdir -p /raid/student.asol17/output
+fi
+
+srun echo start training
+srun singularity run --nv -B /user/student.aau.dk/asol17/imageClassification/swinV2:/code -B /raid/student.asol17/output:/code/experiments -B /raid/student.asol17/swin_image_data:/data /user/student.aau.dk/asol17/imageClassification/swinV2.sif python /code/main.py
+srun echo finished training
