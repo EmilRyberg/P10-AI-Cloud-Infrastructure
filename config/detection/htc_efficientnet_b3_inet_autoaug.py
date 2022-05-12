@@ -1,5 +1,5 @@
 _base_ = [
-    "htc_resnet50_inet_autoaug.py",
+    "htc_resnet50_inet_autoaug.py"
 ]
 
 checkpoint = "https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b3_3rdparty_8xb32-aa_in1k_20220119-5b4887a0.pth"
