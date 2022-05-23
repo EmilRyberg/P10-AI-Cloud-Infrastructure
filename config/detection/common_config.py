@@ -73,8 +73,8 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=1000,
     warmup_ratio=0.001,
-    step=[105, 115])
-runner = dict(type='EpochBasedRunner', max_epochs=120)
+    step=[138, 145])
+runner = dict(type='EpochBasedRunner', max_epochs=150)
 
 #optimizer_config = None
 #model = dict(
